@@ -156,7 +156,7 @@
 // }
 
 // export default App;
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback} from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -197,8 +197,8 @@ function App() {
   const [scanInput, setScanInput] = useState("");
   const [liveWeight, setLiveWeight] = useState(0);
   const [stable, setStable] = useState(false);
-  const API = "http://127.0.0.1:8000";
-  // const API = "https://weighingautomationback-production.up.railway.app";
+  // const API = "http://127.0.0.1:8000";
+  const API = "https://weighingautomation-production.up.railway.app";
 
   const registerPatient = async () => {
     console.log("REGISTER BUTTON CLICKED");
@@ -214,14 +214,14 @@ function App() {
     setBarcodeImage(res.data.barcode_image);
   };
 
-  const fetchPatient = async () => {
-    try {
-      const res = await axios.get(`${API}/patient/${searchBarcode}`);
-      setPatient(res.data);
-    } catch {
-      alert("Patient not found");
-    }
-  };
+  const fetchPatient = useCallback(async () => {
+  try {
+    const res = await axios.get(`${API}/patient/${searchBarcode}`);
+    setPatient(res.data);
+  } catch {
+    alert("Patient not found");
+  }
+}, [searchBarcode]);
   const handleScan = async (e) => {
     if (e.key === "Enter") {
       try {
@@ -260,7 +260,7 @@ function App() {
 
   return () => clearInterval(interval);
 
-}, [searchBarcode]);
+}, [searchBarcode,fetchPatient]);
 
   return (
     <div className="container">
